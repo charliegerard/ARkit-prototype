@@ -11,7 +11,7 @@
         <!--Text Detection-->
         <scene sceneID="xZ7-1P-gne">
             <objects>
-                <viewController id="sUm-rZ-Uzf" customClass="ViewController" customModule="Text_Detection_Starter_Project" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="sUm-rZ-Uzf" customClass="ViewController" customModule="Rectangle_Detection_Prototype" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="g5A-07-oaV"/>
                         <viewControllerLayoutGuide type="bottom" id="hkc-3r-lWU"/>
