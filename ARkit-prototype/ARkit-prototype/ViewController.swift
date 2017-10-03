@@ -45,9 +45,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
     }
     
-    //    override func viewDidLayoutSubviews() {
-    //        sceneView.layer.sublayers?[0].frame = sceneView.bounds
-    //    }
+    override func viewDidLayoutSubviews() {
+        sceneView.layer.sublayers?[0].frame = sceneView.bounds
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
