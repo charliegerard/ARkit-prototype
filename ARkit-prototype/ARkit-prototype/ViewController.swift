@@ -50,6 +50,15 @@ class ViewController: UIViewController, ARSCNViewDelegate, CLLocationManagerDele
         boxNode.position = SCNVector3(0,0,-2)
 //        scene.rootNode.addChildNode(boxNode)
         
+        // Adding text node
+        let text = SCNText(string: "Hello", extrusionDepth: 0.05)
+        text.firstMaterial?.diffuse.contents = UIColor.orange
+        text.font = UIFont(name: "Optima", size: 0.1)
+        let textNode = SCNNode(geometry: text)
+        textNode.geometry = text
+        textNode.position = SCNVector3(0,-1,-2)
+        scene.rootNode.addChildNode(textNode)
+        
         // Set the scene to the view
         sceneView.scene = scene
         
@@ -82,36 +91,30 @@ class ViewController: UIViewController, ARSCNViewDelegate, CLLocationManagerDele
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-//        print("******* PHONE HEADING: *****")
         // 0 is North, 90 is east, 180 is south, 270 is west
         let heading = newHeading.magneticHeading
         
         if(heading > 0 && heading < 90){
-//            print("North")
             orientation = "North"
-            scene.rootNode.addChildNode(boxNode)
+//            scene.rootNode.addChildNode(boxNode)
             
         } else if(heading > 90 && heading < 180){
-//            print("East")
             orientation = "East"
             
-            scene.rootNode.enumerateChildNodes { (node, stop) in
-                node.removeFromParentNode()}
+//            scene.rootNode.enumerateChildNodes { (node, stop) in
+//                node.removeFromParentNode()}
             
         } else if (heading > 180 && heading < 270){
-//            print("South")
             orientation = "South"
-            scene.rootNode.enumerateChildNodes { (node, stop) in
-                node.removeFromParentNode()}
+//            scene.rootNode.enumerateChildNodes { (node, stop) in
+//                node.removeFromParentNode()}
             
         } else if(heading >= 270) {
-//            print("West")
             orientation = "West"
-            scene.rootNode.enumerateChildNodes { (node, stop) in
-                node.removeFromParentNode()}
+//            scene.rootNode.enumerateChildNodes { (node, stop) in
+//                node.removeFromParentNode()}
            
         }
-//        print(newHeading.magneticHeading)
     }
     
     override func viewDidLayoutSubviews() {
