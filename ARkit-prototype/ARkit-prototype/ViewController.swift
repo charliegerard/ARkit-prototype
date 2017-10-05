@@ -10,14 +10,19 @@ import UIKit
 import SceneKit
 import ARKit
 import Vision
+import Foundation
+import CoreLocation
 
-class ViewController: UIViewController, ARSCNViewDelegate {
+class ViewController: UIViewController, ARSCNViewDelegate, CLLocationManagerDelegate {
     
     @IBOutlet var sceneView: ARSCNView!
     var requests = [VNRequest]()
     @IBOutlet weak var debugTextView: UITextView!
     //    var session = AVCaptureSession()
     let dispatchQueueML = DispatchQueue(label: "com.hw.dispatchqueueml") // A Serial Queue
+    
+    //Location
+    let locationManager = CLLocationManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,7 +36,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.autoenablesDefaultLighting = true
         
         // Create a new scene
-        //        let scene = SCNScene(named: "art.scnassets/ship.scn")!
+//                let scene = SCNScene(named: "art.scnassets/ship.scn")!
         let scene = SCNScene()
         
         // Set the scene to the view
@@ -43,6 +48,21 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         loopCoreMLUpdate()
         
+        // Initialise location manager
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+    
+    // Get location coordinates
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let location = locations[0]
+
+        let myLocation:CLLocationCoordinate2D = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude)
+    
+        print("******** MY LOCATION ************")
+        print(myLocation)
     }
     
     override func viewDidLayoutSubviews() {
@@ -94,7 +114,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         DispatchQueue.main.async {
             self.sceneView.layer.sublayers?.removeSubrange(1...)
-            //            self.sceneView.layer.sublayers?.removeSubrange(1...)
+            // self.sceneView.layer.sublayers?.removeSubrange(1...)
             print(result)
             print("--")
             
@@ -103,13 +123,90 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 guard let rect = rectangle else {
                     continue
                 }
-                
+//                let convertedRect = self.convertFromCamera(rect.boundingBox)
                 self.highlightRectangle(box: rect)
             }
         }
     }
     
+//    enum RectangleCorners {
+//        case topLeft(topLeft: SCNVector3, topRight: SCNVector3, bottomLeft: SCNVector3)
+//        case topRight(topLeft: SCNVector3, topRight: SCNVector3, bottomRight: SCNVector3)
+//        case bottomLeft(topLeft: SCNVector3, bottomLeft: SCNVector3, bottomRight: SCNVector3)
+//        case bottomRight(topRight: SCNVector3, bottomLeft: SCNVector3, bottomRight: SCNVector3)
+//    }
+    
+//    func getCorners(for rectangle: VNRectangleObservation, in sceneView: ARSCNView) -> (corners: RectangleCorners, anchor: ARPlaneAnchor)?{
+//
+//        let tl = sceneView.hitTest(convertFromCamera(rectangle.topLeft), types: .existingPlaneUsingExtent)
+//        let tr = sceneView.hitTest(convertFromCamera(rectangle.topRight), types: .existingPlaneUsingExtent)
+//        let bl = sceneView.hitTest(convertFromCamera(rectangle.bottomLeft), types: .existingPlaneUsingExtent)
+//        let br = sceneView.hitTest(convertFromCamera(rectangle.bottomRight), types: .existingPlaneUsingExtent)
+//
+//        print("tl: \(tl.count) tr: \(tr.count) br: \(br.count) bl: \(bl.count)")
+//
+//        return nil
+//    }
+//
+//    func convertFromCamera(_ point: CGPoint) -> CGPoint {
+//        let orientation = UIApplication.shared.statusBarOrientation
+//
+//        let frame = sceneView.frame.size
+//
+//        switch orientation {
+//        case .portrait, .unknown:
+//            return CGPoint(x: point.y * frame.width, y: point.x * frame.height)
+//        case .landscapeLeft:
+//            return CGPoint(x: (1 - point.x) * frame.width, y: point.y * frame.height)
+//        case .landscapeRight:
+//            return CGPoint(x: point.x * frame.width, y: (1 - point.y) * frame.height)
+//        case .portraitUpsideDown:
+//            return CGPoint(x: (1 - point.y) * frame.width, y: (1 - point.x) * frame.height)
+//        }
+//    }
+    
+//    func convertFromCamera(_ rect: CGRect) -> CGRect {
+//        let orientation = UIApplication.shared.statusBarOrientation
+//        let x, y, w, h: CGFloat
+//
+//       let frame = sceneView.frame.size
+//
+//        switch orientation {
+//        case .portrait, .unknown:
+//            w = rect.height
+//            h = rect.width
+//            x = rect.origin.y
+//            y = rect.origin.x
+//        case .landscapeLeft:
+//            w = rect.width
+//            h = rect.height
+//            x = 1 - rect.origin.x - w
+//            y = rect.origin.y
+//        case .landscapeRight:
+//            w = rect.width
+//            h = rect.height
+//            x = rect.origin.x
+//            y = 1 - rect.origin.y - h
+//        case .portraitUpsideDown:
+//            w = rect.height
+//            h = rect.width
+//            x = 1 - rect.origin.y - w
+//            y = 1 - rect.origin.x - h
+//        }
+//
+//        return CGRect(x: x * frame.width, y: y * frame.height, width: w * frame.width, height: h * frame.height)
+//    }
+    
     func highlightRectangle(box: VNRectangleObservation){
+//
+//        guard let cornersAndAnchor = getCorners(for: box, in: sceneView) else {
+//            return
+//        }
+//
+//        let corners = cornersAndAnchor.corners
+//        print("**********")
+//        print(corners)
+//        print("**********")
         
         var toRect = CGRect()
         
@@ -118,6 +215,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         toRect.origin.y =  (sceneView.frame.size.height) - (sceneView.frame.size.height * box.boundingBox.origin.y )
         toRect.origin.y  = toRect.origin.y -  toRect.size.height
         toRect.origin.x =  box.boundingBox.origin.x * sceneView.frame.size.width
+        
+        let boxRect = box.boundingBox
+        let rectCenter = CGPoint(x: boxRect.midX, y: boxRect.midY)
+        let hitTestResults = sceneView.hitTest(rectCenter, types: [.existingPlaneUsingExtent, .featurePoint])
+        
+        print("*********")
+//        print(hitTestResults[0].worldTransform) // raises error
         
         
         let outline = CALayer()
@@ -148,6 +252,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             // Do any desired updates to SceneKit here.
         }
     }
+    
     
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user

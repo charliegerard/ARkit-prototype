@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6594DEAC1F85D7C0004BE07C /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6594DEAB1F85D7C0004BE07C /* CoreLocation.framework */; };
 		65BE84911F7B45D700FF4A2C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BE84901F7B45D700FF4A2C /* AppDelegate.swift */; };
 		65BE84931F7B45D700FF4A2C /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 65BE84921F7B45D700FF4A2C /* art.scnassets */; };
 		65BE84951F7B45D700FF4A2C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BE84941F7B45D700FF4A2C /* ViewController.swift */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6594DEAB1F85D7C0004BE07C /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		65BE848D1F7B45D700FF4A2C /* ARkit-prototype.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ARkit-prototype.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		65BE84901F7B45D700FF4A2C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		65BE84921F7B45D700FF4A2C /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -31,17 +33,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6594DEAC1F85D7C0004BE07C /* CoreLocation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6594DEAA1F85D7BF004BE07C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6594DEAB1F85D7C0004BE07C /* CoreLocation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		65BE84841F7B45D700FF4A2C = {
 			isa = PBXGroup;
 			children = (
 				65BE848F1F7B45D700FF4A2C /* ARkit-prototype */,
 				65BE848E1F7B45D700FF4A2C /* Products */,
+				6594DEAA1F85D7BF004BE07C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
