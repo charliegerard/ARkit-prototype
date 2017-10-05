@@ -24,6 +24,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, CLLocationManagerDele
     //Location
     let locationManager = CLLocationManager()
     
+    var orientation = ""
+    
+    let boxNode = SCNNode()
+    let scene = SCNScene()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -37,7 +42,13 @@ class ViewController: UIViewController, ARSCNViewDelegate, CLLocationManagerDele
         
         // Create a new scene
 //                let scene = SCNScene(named: "art.scnassets/ship.scn")!
-        let scene = SCNScene()
+//        let scene = SCNScene()
+        
+        // Test creating a box and displaying it only at certain coordinates
+        let box = SCNBox(width: 0.2, height: 0.2, length: 0.2, chamferRadius: 0)
+        boxNode.geometry = box
+        boxNode.position = SCNVector3(0,0,-2)
+//        scene.rootNode.addChildNode(boxNode)
         
         // Set the scene to the view
         sceneView.scene = scene
@@ -46,7 +57,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, CLLocationManagerDele
 //        rectangleRequest.imageCropAndScaleOption = VNImageCropAndScaleOption.centerCrop
         self.requests = [rectangleRequest]
         
-        loopCoreMLUpdate()
+        // Running CoreML on all frames to recognise rectangles
+//        loopCoreMLUpdate()
         
         // Initialise location manager
         // Tutorial followed from https://www.youtube.com/watch?v=UyiuX8jULF4
@@ -70,18 +82,34 @@ class ViewController: UIViewController, ARSCNViewDelegate, CLLocationManagerDele
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        print("******* PHONE HEADING: *****")
+//        print("******* PHONE HEADING: *****")
         // 0 is North, 90 is east, 180 is south, 270 is west
         let heading = newHeading.magneticHeading
         
         if(heading > 0 && heading < 90){
-            print("North")
+//            print("North")
+            orientation = "North"
+            scene.rootNode.addChildNode(boxNode)
+            
         } else if(heading > 90 && heading < 180){
-            print("East")
+//            print("East")
+            orientation = "East"
+            
+            scene.rootNode.enumerateChildNodes { (node, stop) in
+                node.removeFromParentNode()}
+            
         } else if (heading > 180 && heading < 270){
-            print("South")
+//            print("South")
+            orientation = "South"
+            scene.rootNode.enumerateChildNodes { (node, stop) in
+                node.removeFromParentNode()}
+            
         } else if(heading >= 270) {
-            print("West")
+//            print("West")
+            orientation = "West"
+            scene.rootNode.enumerateChildNodes { (node, stop) in
+                node.removeFromParentNode()}
+           
         }
 //        print(newHeading.magneticHeading)
     }
@@ -101,7 +129,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, CLLocationManagerDele
         
 //        startRectanglesDetection()
     }
-    
     
     
 //    func startRectanglesDetection(){
@@ -269,11 +296,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, CLLocationManagerDele
     
     // MARK: - ARSCNViewDelegate
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+        print(orientation)
         DispatchQueue.main.async {
             // Do any desired updates to SceneKit here.
         }
     }
-    
     
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
