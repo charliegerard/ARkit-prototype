@@ -49,10 +49,14 @@ class ViewController: UIViewController, ARSCNViewDelegate, CLLocationManagerDele
         loopCoreMLUpdate()
         
         // Initialise location manager
+        // Tutorial followed from https://www.youtube.com/watch?v=UyiuX8jULF4
+        
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
+        // initialize tracking of phone compass orientation
+        locationManager.startUpdatingHeading()
     }
     
     // Get location coordinates
@@ -63,6 +67,23 @@ class ViewController: UIViewController, ARSCNViewDelegate, CLLocationManagerDele
     
         print("******** MY LOCATION ************")
         print(myLocation)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        print("******* PHONE HEADING: *****")
+        // 0 is North, 90 is east, 180 is south, 270 is west
+        let heading = newHeading.magneticHeading
+        
+        if(heading > 0 && heading < 90){
+            print("North")
+        } else if(heading > 90 && heading < 180){
+            print("East")
+        } else if (heading > 180 && heading < 270){
+            print("South")
+        } else if(heading >= 270) {
+            print("West")
+        }
+//        print(newHeading.magneticHeading)
     }
     
     override func viewDidLayoutSubviews() {
@@ -115,8 +136,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, CLLocationManagerDele
         DispatchQueue.main.async {
             self.sceneView.layer.sublayers?.removeSubrange(1...)
             // self.sceneView.layer.sublayers?.removeSubrange(1...)
-            print(result)
-            print("--")
+//            print(result)
+//            print("--")
             
             for rectangle in result {
                 
@@ -220,7 +241,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, CLLocationManagerDele
         let rectCenter = CGPoint(x: boxRect.midX, y: boxRect.midY)
         let hitTestResults = sceneView.hitTest(rectCenter, types: [.existingPlaneUsingExtent, .featurePoint])
         
-        print("*********")
+//        print("*********")
 //        print(hitTestResults[0].worldTransform) // raises error
         
         
